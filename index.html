@@ -27,7 +27,6 @@
       position: relative;
     }
 
-    /* Starfield background */
     .stars {
       position: fixed;
       inset: 0;
@@ -45,7 +44,6 @@
       50% { opacity: 0.9; transform: scale(1.4); }
     }
 
-    /* Floating orbs */
     .orb {
       position: fixed;
       border-radius: 50%;
@@ -62,7 +60,6 @@
       to { transform: translate(20px, 20px) scale(1.1); }
     }
 
-    /* Card */
     .card {
       position: relative;
       z-index: 10;
@@ -81,7 +78,6 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* Decorative top line */
     .card::before {
       content: '';
       position: absolute;
@@ -90,7 +86,6 @@
       background: linear-gradient(90deg, transparent, var(--gold), transparent);
     }
 
-    /* Category badge */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -108,7 +103,6 @@
     .badge.love   { color: #f4b8c0; border-color: rgba(244,184,192,0.4); background: rgba(244,184,192,0.08); }
     .badge.happy  { color: #a8d8a0; border-color: rgba(168,216,160,0.4); background: rgba(168,216,160,0.08); }
 
-    /* Quote mark */
     .quote-mark {
       font-family: 'Playfair Display', serif;
       font-size: 5rem;
@@ -120,7 +114,6 @@
       animation: fadeUp 0.6s 0.3s both;
     }
 
-    /* Quote text */
     .quote-text {
       font-size: 1.15rem;
       line-height: 1.85;
@@ -129,9 +122,9 @@
       word-break: keep-all;
       margin-bottom: 24px;
       animation: fadeUp 0.6s 0.4s both;
+      white-space: pre-line;
     }
 
-    /* Author / sub */
     .quote-sub {
       font-size: 0.78rem;
       color: rgba(253,248,240,0.4);
@@ -140,7 +133,6 @@
       animation: fadeUp 0.6s 0.5s both;
     }
 
-    /* Divider */
     .divider {
       width: 60px;
       height: 1px;
@@ -149,7 +141,6 @@
       animation: fadeUp 0.6s 0.55s both;
     }
 
-    /* Button */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -173,12 +164,9 @@
       box-shadow: 0 8px 24px rgba(201,168,76,0.15);
     }
     .btn:active { transform: translateY(0); }
-
-    /* Spin icon */
     .btn.spinning .icon { animation: spin 0.6s linear; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-    /* Footer */
     .footer {
       position: fixed;
       bottom: 20px;
@@ -190,7 +178,6 @@
       z-index: 10;
     }
 
-    /* Quote change animation */
     .quote-area {
       min-height: 140px;
       display: flex;
@@ -216,20 +203,16 @@
 </head>
 <body>
 
-  <!-- Stars -->
   <div class="stars" id="stars"></div>
-
-  <!-- Orbs -->
   <div class="orb orb1"></div>
   <div class="orb orb2"></div>
   <div class="orb orb3"></div>
 
-  <!-- Card -->
   <div class="card">
     <div id="badge" class="badge luck">✦ 행운</div>
     <div class="quote-area" id="quoteArea">
       <span class="quote-mark">"</span>
-      <p class="quote-text" id="quoteText">오늘 당신에게 행운이 찾아오고 있습니다. 문을 활짝 열어 두세요.</p>
+      <p class="quote-text" id="quoteText">오늘 당신에게 행운이 찾아오고 있습니다.</p>
       <p class="quote-sub" id="quoteSub">— 오늘의 메시지</p>
     </div>
     <div class="divider"></div>
@@ -242,7 +225,6 @@
   <div class="footer">명함의 QR을 스캔해 주셔서 감사합니다 🌙</div>
 
   <script>
-    // ── Stars ─────────────────────────────────────────────
     const starsEl = document.getElementById('stars');
     for (let i = 0; i < 80; i++) {
       const s = document.createElement('div');
@@ -258,42 +240,76 @@
       starsEl.appendChild(s);
     }
 
-    // ── Quotes ────────────────────────────────────────────
     const quotes = [
-      // 행운
+
+      // ── 행운 · 따뜻한 ───────────────────────────────
       { cat: 'luck', icon: '✦', label: '행운', text: '오늘 당신에게 행운이 찾아오고 있습니다.\n문을 활짝 열어 두세요.', sub: '— 오늘의 메시지' },
-      { cat: 'luck', icon: '✦', label: '행운', text: '행운은 준비된 자에게 기회가 찾아왔을 때 만들어집니다.', sub: '— 세네카' },
-      { cat: 'luck', icon: '✦', label: '행운', text: '오늘 당신이 내딛는 한 걸음이\n내일의 기적을 만듭니다.', sub: '— 오늘의 메시지' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '좋은 일들이 지금 이 순간에도\n당신을 향해 달려오고 있습니다.', sub: '— 오늘의 메시지' },
       { cat: 'luck', icon: '✦', label: '행운', text: '별이 빛나는 밤처럼,\n당신의 앞길에 행운의 빛이 가득하기를.', sub: '— 오늘의 메시지' },
-      { cat: 'luck', icon: '✦', label: '행운', text: '좋은 일들이 오늘 당신을 향해\n달려오고 있습니다.', sub: '— 오늘의 메시지' },
       { cat: 'luck', icon: '✦', label: '행운', text: '우주는 당신이 원하는 것을\n이미 준비해 두었습니다.', sub: '— 오늘의 메시지' },
-      { cat: 'luck', icon: '✦', label: '행운', text: '당신이 상상하는 모든 아름다운 일들이\n현실이 되는 날이 오고 있습니다.', sub: '— 오늘의 메시지' },
 
-      // 사랑
-      { cat: 'love', icon: '♡', label: '사랑', text: '사랑은 보는 것이 아니라\n느끼는 것입니다.', sub: '— 오늘의 메시지' },
+      // ── 행운 · 동기부여 ──────────────────────────────
+      { cat: 'luck', icon: '✦', label: '행운', text: '행운은 준비된 자에게\n기회가 찾아왔을 때 만들어집니다.', sub: '— 세네카' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '오늘 당신이 내딛는 한 걸음이\n내일의 기적을 만듭니다.', sub: '— 오늘의 메시지' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '포기하지 않는 사람에게\n행운은 결국 손을 내밉니다.', sub: '— 오늘의 메시지' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '당신이 시도하는 매 순간이\n이미 행운의 시작입니다.', sub: '— 오늘의 메시지' },
+
+      // ── 행운 · 철학적 ────────────────────────────────
+      { cat: 'luck', icon: '✦', label: '행운', text: '행운을 믿는가? 그렇다면\n더 열심히 노력할수록 더 많이 생긴다.', sub: '— 토마스 제퍼슨' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '나쁜 일도 결국 돌아보면\n좋은 일의 씨앗이었습니다.', sub: '— 오늘의 메시지' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '모든 우연은\n필연이 다른 얼굴로 나타난 것입니다.', sub: '— 오늘의 메시지' },
+
+      // ── 행운 · 유머 ──────────────────────────────────
+      { cat: 'luck', icon: '✦', label: '행운', text: '오늘 로또는 사셨나요?\n행운은 일단 지갑을 열어야 옵니다.', sub: '— 오늘의 메시지 😄' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '오늘 엘리베이터에서 문이 딱 열렸다면\n그것도 행운입니다.', sub: '— 오늘의 메시지' },
+
+      // ── 사랑 · 따뜻한 ───────────────────────────────
       { cat: 'love', icon: '♡', label: '사랑', text: '당신은 충분히 사랑받을 자격이 있습니다.\n지금 이 순간도, 언제나.', sub: '— 오늘의 메시지' },
-      { cat: 'love', icon: '♡', label: '사랑', text: '가장 위대한 일은\n누군가를 사랑하고, 사랑받는 것입니다.', sub: '— 빅토르 위고' },
-      { cat: 'love', icon: '♡', label: '사랑', text: '당신 곁에 있는 소중한 사람을\n오늘 꼭 안아주세요.', sub: '— 오늘의 메시지' },
-      { cat: 'love', icon: '♡', label: '사랑', text: '사랑은 주는 것으로 더 커지고\n나누는 것으로 더 깊어집니다.', sub: '— 오늘의 메시지' },
-      { cat: 'love', icon: '♡', label: '사랑', text: '진심 어린 한마디가\n누군가의 하루를 따뜻하게 바꿉니다.', sub: '— 오늘의 메시지' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '당신 곁에 있는 소중한 사람을\n오늘 꼭 한번 안아주세요.', sub: '— 오늘의 메시지' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '진심 어린 한마디가\n누군가의 하루를 통째로 따뜻하게 바꿉니다.', sub: '— 오늘의 메시지' },
       { cat: 'love', icon: '♡', label: '사랑', text: '사랑한다는 말은\n세상에서 가장 강한 마법입니다.', sub: '— 오늘의 메시지' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '나를 사랑하는 것이\n모든 사랑의 시작입니다.', sub: '— 오늘의 메시지' },
 
-      // 행복
-      { cat: 'happy', icon: '☀', label: '행복', text: '행복은 목적지가 아니라\n여행하는 방식입니다.', sub: '— 오늘의 메시지' },
-      { cat: 'happy', icon: '☀', label: '행복', text: '지금 이 순간의 작은 기쁨을\n놓치지 마세요.', sub: '— 오늘의 메시지' },
+      // ── 사랑 · 동기부여 ──────────────────────────────
+      { cat: 'love', icon: '♡', label: '사랑', text: '사랑은 주는 것으로 더 커지고\n나누는 것으로 더 깊어집니다.', sub: '— 오늘의 메시지' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '가장 위대한 일은\n누군가를 사랑하고, 또 사랑받는 것입니다.', sub: '— 빅토르 위고' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '사랑은 동사입니다.\n느끼는 것이 아니라 행동하는 것입니다.', sub: '— 오늘의 메시지' },
+
+      // ── 사랑 · 철학적 ────────────────────────────────
+      { cat: 'love', icon: '♡', label: '사랑', text: '사랑은 상대방을 바꾸려 하지 않고\n있는 그대로 보는 것입니다.', sub: '— 오늘의 메시지' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '사랑받고 싶다면\n먼저 사랑할 준비가 되어 있어야 합니다.', sub: '— 에리히 프롬' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '인간은 사랑하기 위해 태어났고\n사랑받기 위해 존재합니다.', sub: '— 마더 테레사' },
+
+      // ── 사랑 · 유머 ──────────────────────────────────
+      { cat: 'love', icon: '♡', label: '사랑', text: '사랑은 눈을 멀게 한다.\n그래서 결혼 후 눈이 다시 뜨인다고 한다.', sub: '— 작자 미상 😄' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '오늘 좋아하는 사람에게\n밥 한 끼 사주는 것도 훌륭한 사랑입니다.', sub: '— 오늘의 메시지' },
+
+      // ── 행복 · 따뜻한 ───────────────────────────────
+      { cat: 'happy', icon: '☀', label: '행복', text: '지금 이 순간의 작은 기쁨을\n절대 놓치지 마세요.', sub: '— 오늘의 메시지' },
       { cat: 'happy', icon: '☀', label: '행복', text: '행복은 멀리 있지 않습니다.\n지금 당신 곁에 이미 있습니다.', sub: '— 오늘의 메시지' },
       { cat: 'happy', icon: '☀', label: '행복', text: '오늘 하루, 당신이 존재하는 것만으로도\n세상은 더 빛납니다.', sub: '— 오늘의 메시지' },
-      { cat: 'happy', icon: '☀', label: '행복', text: '웃음 한 번으로\n하루가 달라집니다.', sub: '— 오늘의 메시지' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '따뜻한 커피 한 잔,\n그것만으로도 오늘은 충분히 좋은 날입니다.', sub: '— 오늘의 메시지' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '오늘도 충분히 잘하고 있습니다.\n스스로를 꼭 칭찬해 주세요.', sub: '— 오늘의 메시지' },
+
+      // ── 행복 · 동기부여 ──────────────────────────────
+      { cat: 'happy', icon: '☀', label: '행복', text: '웃음 한 번으로\n하루가 완전히 달라집니다.', sub: '— 오늘의 메시지' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '행복은 습관입니다.\n매일 조금씩 연습하면 됩니다.', sub: '— 오늘의 메시지' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '어제보다 조금 더 나은 오늘.\n그것으로 충분합니다.', sub: '— 오늘의 메시지' },
+
+      // ── 행복 · 철학적 ────────────────────────────────
+      { cat: 'happy', icon: '☀', label: '행복', text: '행복은 목적지가 아니라\n여행하는 방식입니다.', sub: '— 오늘의 메시지' },
       { cat: 'happy', icon: '☀', label: '행복', text: '행복한 사람은\n행복해지기로 결심한 사람입니다.', sub: '— 오늘의 메시지' },
-      { cat: 'happy', icon: '☀', label: '행복', text: '오늘 하루도 충분히 잘하고 있습니다.\n스스로를 칭찬해 주세요.', sub: '— 오늘의 메시지' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '행복은 소유에서 오지 않고\n존재하는 방식에서 옵니다.', sub: '— 에리히 프롬' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '지금 이 순간이 지나면\n이 순간도 그리운 날이 됩니다.', sub: '— 오늘의 메시지' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '삶은 가까이서 보면 비극이지만\n멀리서 보면 희극입니다.', sub: '— 찰리 채플린' },
+
+      // ── 행복 · 유머 ──────────────────────────────────
+      { cat: 'happy', icon: '☀', label: '행복', text: '오늘 맛있는 거 드세요.\n행복의 지름길은 위장을 통과합니다.', sub: '— 오늘의 메시지 😄' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '퇴근 시간이 다가오는 것만큼\n행복한 일이 또 있을까요?', sub: '— 직장인 명언 😄' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '자고 일어났더니 건강하다.\n이미 오늘의 행복 조건 충족입니다.', sub: '— 오늘의 메시지' },
     ];
 
-    const catColors = {
-      luck:  'luck',
-      love:  'love',
-      happy: 'happy',
-    };
-
+    const catColors = { luck: 'luck', love: 'love', happy: 'happy' };
     let lastIdx = -1;
 
     function getRandomQuote() {
@@ -306,25 +322,20 @@
     function nextQuote() {
       const area = document.getElementById('quoteArea');
       const btn  = document.getElementById('btn');
-
       btn.classList.add('spinning');
       area.classList.add('changing');
-
       setTimeout(() => {
         const q = getRandomQuote();
         document.getElementById('quoteText').textContent = q.text;
         document.getElementById('quoteSub').textContent  = q.sub;
-
         const badge = document.getElementById('badge');
         badge.className = `badge ${catColors[q.cat]}`;
         badge.textContent = `${q.icon} ${q.label}`;
-
         area.classList.remove('changing');
         btn.classList.remove('spinning');
       }, 400);
     }
 
-    // Init with a random quote
     (function init() {
       const q = getRandomQuote();
       document.getElementById('quoteText').textContent = q.text;
