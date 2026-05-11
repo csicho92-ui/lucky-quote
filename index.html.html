@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오늘의 행운 ✨</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #f0d080;
+      --cream: #fdf8f0;
+      --dark: #1a1208;
+      --rose: #e8a0a0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Noto Serif KR', serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Starfield background */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      animation: twinkle var(--d, 3s) infinite var(--delay, 0s) ease-in-out;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.1; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.4); }
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 0;
+      animation: float var(--fd, 8s) ease-in-out infinite alternate;
+    }
+    .orb1 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(201,168,76,0.3), transparent); top: -80px; left: -80px; --fd: 9s; }
+    .orb2 { width: 250px; height: 250px; background: radial-gradient(circle, rgba(232,160,160,0.25), transparent); bottom: -60px; right: -60px; --fd: 11s; }
+    .orb3 { width: 200px; height: 200px; background: radial-gradient(circle, rgba(180,140,220,0.2), transparent); top: 40%; left: -40px; --fd: 7s; }
+    @keyframes float {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(20px, 20px) scale(1.1); }
+    }
+
+    /* Card */
+    .card {
+      position: relative;
+      z-index: 10;
+      width: min(90vw, 380px);
+      background: linear-gradient(145deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 24px;
+      padding: 48px 36px 40px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 0 60px rgba(201,168,76,0.08), inset 0 1px 0 rgba(255,255,255,0.1);
+      animation: cardIn 0.8s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Decorative top line */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 15%; right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    /* Category badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      margin-bottom: 28px;
+      border: 1px solid;
+      animation: fadeUp 0.6s 0.2s both;
+    }
+    .badge.luck   { color: var(--gold-light); border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.08); }
+    .badge.love   { color: #f4b8c0; border-color: rgba(244,184,192,0.4); background: rgba(244,184,192,0.08); }
+    .badge.happy  { color: #a8d8a0; border-color: rgba(168,216,160,0.4); background: rgba(168,216,160,0.08); }
+
+    /* Quote mark */
+    .quote-mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      line-height: 0.6;
+      color: var(--gold);
+      opacity: 0.25;
+      display: block;
+      margin-bottom: 16px;
+      animation: fadeUp 0.6s 0.3s both;
+    }
+
+    /* Quote text */
+    .quote-text {
+      font-size: 1.15rem;
+      line-height: 1.85;
+      color: var(--cream);
+      letter-spacing: 0.04em;
+      word-break: keep-all;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s 0.4s both;
+    }
+
+    /* Author / sub */
+    .quote-sub {
+      font-size: 0.78rem;
+      color: rgba(253,248,240,0.4);
+      letter-spacing: 0.1em;
+      margin-bottom: 36px;
+      animation: fadeUp 0.6s 0.5s both;
+    }
+
+    /* Divider */
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto 32px;
+      animation: fadeUp 0.6s 0.55s both;
+    }
+
+    /* Button */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(201,168,76,0.5);
+      background: rgba(201,168,76,0.1);
+      color: var(--gold-light);
+      font-family: 'Noto Serif KR', serif;
+      font-size: 0.88rem;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: fadeUp 0.6s 0.65s both;
+    }
+    .btn:hover {
+      background: rgba(201,168,76,0.2);
+      border-color: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(201,168,76,0.15);
+    }
+    .btn:active { transform: translateY(0); }
+
+    /* Spin icon */
+    .btn.spinning .icon { animation: spin 0.6s linear; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 20px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.18);
+      letter-spacing: 0.08em;
+      z-index: 10;
+    }
+
+    /* Quote change animation */
+    .quote-area {
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .quote-area.changing {
+      animation: quoteChange 0.4s ease;
+    }
+    @keyframes quoteChange {
+      0% { opacity: 1; transform: translateY(0); }
+      40% { opacity: 0; transform: translateY(-12px); }
+      60% { opacity: 0; transform: translateY(12px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Stars -->
+  <div class="stars" id="stars"></div>
+
+  <!-- Orbs -->
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <!-- Card -->
+  <div class="card">
+    <div id="badge" class="badge luck">✦ 행운</div>
+    <div class="quote-area" id="quoteArea">
+      <span class="quote-mark">"</span>
+      <p class="quote-text" id="quoteText">오늘 당신에게 행운이 찾아오고 있습니다. 문을 활짝 열어 두세요.</p>
+      <p class="quote-sub" id="quoteSub">— 오늘의 메시지</p>
+    </div>
+    <div class="divider"></div>
+    <button class="btn" id="btn" onclick="nextQuote()">
+      <span class="icon" style="font-size:1rem;">✨</span>
+      <span>새로운 글귀 받기</span>
+    </button>
+  </div>
+
+  <div class="footer">명함의 QR을 스캔해 주셔서 감사합니다 🌙</div>
+
+  <script>
+    // ── Stars ─────────────────────────────────────────────
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 80; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.5 + 0.5;
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        top:${Math.random()*100}%; left:${Math.random()*100}%;
+        --d:${(Math.random()*4+2).toFixed(1)}s;
+        --delay:-${(Math.random()*5).toFixed(1)}s;
+        opacity:${Math.random()*0.5+0.1};
+      `;
+      starsEl.appendChild(s);
+    }
+
+    // ── Quotes ────────────────────────────────────────────
+    const quotes = [
+      // 행운
+      { cat: 'luck', icon: '✦', label: '행운', text: '오늘 당신에게 행운이 찾아오고 있습니다.\n문을 활짝 열어 두세요.', sub: '— 오늘의 메시지' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '행운은 준비된 자에게 기회가 찾아왔을 때 만들어집니다.', sub: '— 세네카' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '오늘 당신이 내딛는 한 걸음이\n내일의 기적을 만듭니다.', sub: '— 오늘의 메시지' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '별이 빛나는 밤처럼,\n당신의 앞길에 행운의 빛이 가득하기를.', sub: '— 오늘의 메시지' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '좋은 일들이 오늘 당신을 향해\n달려오고 있습니다.', sub: '— 오늘의 메시지' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '우주는 당신이 원하는 것을\n이미 준비해 두었습니다.', sub: '— 오늘의 메시지' },
+      { cat: 'luck', icon: '✦', label: '행운', text: '당신이 상상하는 모든 아름다운 일들이\n현실이 되는 날이 오고 있습니다.', sub: '— 오늘의 메시지' },
+
+      // 사랑
+      { cat: 'love', icon: '♡', label: '사랑', text: '사랑은 보는 것이 아니라\n느끼는 것입니다.', sub: '— 오늘의 메시지' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '당신은 충분히 사랑받을 자격이 있습니다.\n지금 이 순간도, 언제나.', sub: '— 오늘의 메시지' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '가장 위대한 일은\n누군가를 사랑하고, 사랑받는 것입니다.', sub: '— 빅토르 위고' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '당신 곁에 있는 소중한 사람을\n오늘 꼭 안아주세요.', sub: '— 오늘의 메시지' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '사랑은 주는 것으로 더 커지고\n나누는 것으로 더 깊어집니다.', sub: '— 오늘의 메시지' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '진심 어린 한마디가\n누군가의 하루를 따뜻하게 바꿉니다.', sub: '— 오늘의 메시지' },
+      { cat: 'love', icon: '♡', label: '사랑', text: '사랑한다는 말은\n세상에서 가장 강한 마법입니다.', sub: '— 오늘의 메시지' },
+
+      // 행복
+      { cat: 'happy', icon: '☀', label: '행복', text: '행복은 목적지가 아니라\n여행하는 방식입니다.', sub: '— 오늘의 메시지' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '지금 이 순간의 작은 기쁨을\n놓치지 마세요.', sub: '— 오늘의 메시지' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '행복은 멀리 있지 않습니다.\n지금 당신 곁에 이미 있습니다.', sub: '— 오늘의 메시지' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '오늘 하루, 당신이 존재하는 것만으로도\n세상은 더 빛납니다.', sub: '— 오늘의 메시지' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '웃음 한 번으로\n하루가 달라집니다.', sub: '— 오늘의 메시지' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '행복한 사람은\n행복해지기로 결심한 사람입니다.', sub: '— 오늘의 메시지' },
+      { cat: 'happy', icon: '☀', label: '행복', text: '오늘 하루도 충분히 잘하고 있습니다.\n스스로를 칭찬해 주세요.', sub: '— 오늘의 메시지' },
+    ];
+
+    const catColors = {
+      luck:  'luck',
+      love:  'love',
+      happy: 'happy',
+    };
+
+    let lastIdx = -1;
+
+    function getRandomQuote() {
+      let idx;
+      do { idx = Math.floor(Math.random() * quotes.length); } while (idx === lastIdx);
+      lastIdx = idx;
+      return quotes[idx];
+    }
+
+    function nextQuote() {
+      const area = document.getElementById('quoteArea');
+      const btn  = document.getElementById('btn');
+
+      btn.classList.add('spinning');
+      area.classList.add('changing');
+
+      setTimeout(() => {
+        const q = getRandomQuote();
+        document.getElementById('quoteText').textContent = q.text;
+        document.getElementById('quoteSub').textContent  = q.sub;
+
+        const badge = document.getElementById('badge');
+        badge.className = `badge ${catColors[q.cat]}`;
+        badge.textContent = `${q.icon} ${q.label}`;
+
+        area.classList.remove('changing');
+        btn.classList.remove('spinning');
+      }, 400);
+    }
+
+    // Init with a random quote
+    (function init() {
+      const q = getRandomQuote();
+      document.getElementById('quoteText').textContent = q.text;
+      document.getElementById('quoteSub').textContent  = q.sub;
+      const badge = document.getElementById('badge');
+      badge.className = `badge ${catColors[q.cat]}`;
+      badge.textContent = `${q.icon} ${q.label}`;
+    })();
+  </script>
+</body>
+</html>
