@@ -511,8 +511,7 @@
     </div>
 
     <button class="collage-btn btn-new" id="nextBtn" onclick="nextQuote(event)">
-      <span class="btn-main">✉️ 다른 편지 뽑기</span>
-      <span class="btn-sub">누를 때마다 새 메시지가 와요 · <b id="quoteCount"></b></span>
+      <span class="btn-main">✉️ 새 편지</span>
     </button>
   </div>
 
@@ -654,11 +653,6 @@
     b.className = 'badge ' + q.cat;
     b.textContent = LABEL[q.cat];
   }
-  // 몇 번째 편지인지 · 전체 몇 통인지 표시
-  let opened = 0;
-  function updateCount() {
-    document.getElementById('quoteCount').textContent = opened + '번째 / 총 ' + quotes.length + '통';
-  }
   let toastTimer;
   let busy = false;
   function nextQuote(e) {
@@ -670,7 +664,7 @@
     // 봉투 등장(편지지 들어감) → 뚜껑 열림 → 새 편지지가 나옴 → 봉투 퇴장
     card.classList.remove('out');
     card.classList.add('sealed');
-    setTimeout(() => { apply(getRand()); opened++; updateCount(); card.classList.add('opening'); }, 350);
+    setTimeout(() => { apply(getRand()); card.classList.add('opening'); }, 350);
     setTimeout(() => { card.classList.add('out'); }, 850);
     setTimeout(() => {
       card.classList.remove('sealed', 'opening');
@@ -680,7 +674,7 @@
       busy = false;
     }, 1350);
   }
-  apply(getRand()); opened = 1; updateCount();
+  apply(getRand());
 </script>
 </body>
 </html>
