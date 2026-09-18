@@ -291,7 +291,28 @@
       border-radius: 2px;
     }
 
-    .btn-new  { background: #dcfce7; color: var(--dark-green); --br: -0.8deg; }
+    .btn-new  { background: #dcfce7; color: var(--dark-green); --br: -0.8deg; flex-direction: column; gap: 3px; }
+    .btn-new .btn-main { font-size: 1.15rem; }
+    .btn-new .btn-sub  { font-size: 0.78rem; font-weight: 400; opacity: 0.75; letter-spacing: 0; }
+    .btn-new.shake { animation: btnShake 0.4s ease; }
+    @keyframes btnShake {
+      0%,100%{ transform: rotate(-0.8deg); }
+      25%    { transform: rotate(-4deg) translateX(-3px); }
+      75%    { transform: rotate(3deg) translateX(3px); }
+    }
+
+    /* 새 편지 도착 토스트 */
+    .toast {
+      position: fixed; top: 18px; left: 50%;
+      transform: translateX(-50%) translateY(-30px);
+      background: var(--cream); color: var(--ink);
+      font-family: 'Gowun Dodum', cursive; font-weight: 700; font-size: 0.95rem;
+      padding: 8px 16px; border-radius: 2px;
+      box-shadow: 2px 3px 0 rgba(0,0,0,0.15);
+      opacity: 0; pointer-events: none; z-index: 1000;
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .btn-port { background: #fef9c3; color: #713f12;           --br:  0.6deg; }
     .btn-insta{ background: #fce7f3; color: #9d174d;           --br: -0.4deg; }
 
@@ -446,8 +467,9 @@
 
   <!-- 버튼 -->
   <div class="btn-wrap">
-    <button class="collage-btn btn-new" onclick="nextQuote(event)">
-      🎲 새로운 편지 받기
+    <button class="collage-btn btn-new" id="nextBtn" onclick="nextQuote(event)">
+      <span class="btn-main">✉️ 다른 편지 뽑기</span>
+      <span class="btn-sub">누를 때마다 새 메시지가 와요 · <b id="quoteCount"></b></span>
     </button>
   </div>
 
@@ -478,6 +500,7 @@
 
 </div>
 
+<div class="toast" id="toast">📬 새 편지가 도착했어요!</div>
 <div class="footer">✦ 칠라씨가 보내는 오늘의 행운 편지</div>
 
 <script>
@@ -539,6 +562,39 @@
     {cat:'happy', text:'오늘 맛있는 거 드세요 😄\n행복은 위장을 통과합니다.', sub:'— 칠라씨의 조언'},
     {cat:'happy', text:'퇴근 시간이 다가오는 것만큼\n행복한 일이 또 있을까요? 😄', sub:'— 직장인 명언'},
     {cat:'happy', text:'오늘도 충분히 잘하고 있어요.\n스스로를 칭찬해 주세요.', sub:'— 오늘의 메시지'},
+    {cat:'luck', text:'네잎클로버는 세잎클로버\n사이에 숨어 있어요.\n오늘은 잘 찾아보세요.', sub:'— 칠라씨의 조언'},
+    {cat:'luck', text:'행운은 문을 두드리지 않아요.\n이미 들어와 앉아 있죠.', sub:'— 오늘의 메시지'},
+    {cat:'luck', text:'오늘 만나는 사람 중 한 명이\n당신의 행운입니다.', sub:'— 오늘의 메시지'},
+    {cat:'luck', text:'기회는 언제나 작업복을 입고\n찾아옵니다.', sub:'— 토마스 에디슨'},
+    {cat:'luck', text:'잘 될 거예요.\n근거는 없지만 확신은 있어요.', sub:'— 칠라씨의 조언'},
+    {cat:'luck', text:'운이 좋은 사람은\n운이 좋다고 믿는 사람입니다.', sub:'— 오늘의 메시지'},
+    {cat:'luck', text:'어제의 실패는\n오늘의 행운을 위한\n복선이었을 뿐.', sub:'— 오늘의 메시지'},
+    {cat:'luck', text:'이 편지를 받은 당신,\n이미 오늘의 행운 1개 획득!', sub:'— 칠라씨의 편지'},
+    {cat:'luck', text:'행운을 기다리지 말고\n행운이 찾기 쉬운 곳에 서 있으세요.', sub:'— 오늘의 메시지'},
+    {cat:'luck', text:'오늘의 럭키 아이템:\n따뜻한 커피 한 잔 ☕', sub:'— 칠라씨의 조언'},
+    {cat:'luck', text:'좋은 일은 늘\n생각보다 조금 늦게,\n그러나 반드시 옵니다.', sub:'— 오늘의 메시지'},
+    {cat:'love', text:'오늘 누군가에게\n고맙다고 말해 보세요.\n그 말이 돌아옵니다.', sub:'— 오늘의 메시지'},
+    {cat:'love', text:'당신을 생각하는 사람이\n지금 이 순간에도 있어요.', sub:'— 오늘의 메시지'},
+    {cat:'love', text:'사랑은 거창한 게 아니라\n밥 먹었냐는 한마디.', sub:'— 칠라씨의 조언'},
+    {cat:'love', text:'내가 나를 아끼는 만큼\n세상도 나를 아낍니다.', sub:'— 오늘의 메시지'},
+    {cat:'love', text:'오래된 친구에게\n오늘 연락 한 번 해 보세요.', sub:'— 오늘의 메시지'},
+    {cat:'love', text:'사랑받고 싶다면\n먼저 다정해지세요.', sub:'— 오늘의 메시지'},
+    {cat:'love', text:'따뜻한 말 한마디가\n누군가의 하루를 바꿉니다.', sub:'— 오늘의 메시지'},
+    {cat:'love', text:'당신은 누군가의\n가장 좋아하는 사람입니다.', sub:'— 오늘의 메시지'},
+    {cat:'love', text:'칠라씨는 당신을\n무조건 응원합니다 🐭', sub:'— 칠라씨의 편지'},
+    {cat:'love', text:'혼자라고 느껴지는 날엔\n이 편지를 다시 열어 보세요.', sub:'— 칠라씨의 편지'},
+    {cat:'happy', text:'행복은 크기가 아니라\n빈도입니다.\n작게, 자주.', sub:'— 오늘의 메시지'},
+    {cat:'happy', text:'오늘 하늘 한 번\n올려다보셨나요?', sub:'— 칠라씨의 조언'},
+    {cat:'happy', text:'완벽한 하루보다\n괜찮은 하루가 더 많으면 됩니다.', sub:'— 오늘의 메시지'},
+    {cat:'happy', text:'웃을 일이 없으면\n먼저 웃어 보세요.\n일이 따라옵니다.', sub:'— 오늘의 메시지'},
+    {cat:'happy', text:'오늘은 일찍 자는 게\n최고의 자기계발.', sub:'— 칠라씨의 조언'},
+    {cat:'happy', text:'좋아하는 노래 한 곡,\n지금 틀어도 됩니다.', sub:'— 오늘의 메시지'},
+    {cat:'happy', text:'걱정의 90%는\n일어나지 않습니다.\n남은 10%는 해결됩니다.', sub:'— 오늘의 메시지'},
+    {cat:'happy', text:'행복은 습관입니다.\n오늘 한 번 더 연습해요.', sub:'— 오늘의 메시지'},
+    {cat:'happy', text:'금요일이 아니어도\n괜찮은 하루일 수 있어요.', sub:'— 직장인 명언'},
+    {cat:'happy', text:'오늘 한 가지만 잘해도\n충분히 성공한 하루.', sub:'— 오늘의 메시지'},
+    {cat:'happy', text:'지금 이 편지를 읽는\n당신의 하루가\n조금 더 부드러워지길.', sub:'— 칠라씨의 편지'},
+    {cat:'happy', text:'해바라기 씨 한 줌 같은\n소소한 기쁨을 챙기세요 🌻', sub:'— 칠라씨의 조언'},
   ];
 
   const LABEL = { luck:'✦ 행운', love:'♡ 사랑', happy:'☀ 행복' };
@@ -555,12 +611,27 @@
     b.className = 'badge ' + q.cat;
     b.textContent = LABEL[q.cat];
   }
+  // 몇 번째 편지인지 · 전체 몇 통인지 표시
+  let opened = 0;
+  function updateCount() {
+    document.getElementById('quoteCount').textContent = opened + '번째 / 총 ' + quotes.length + '통';
+  }
+  let toastTimer;
   function nextQuote(e) {
     const area = document.getElementById('quoteArea');
+    const btn  = document.getElementById('nextBtn');
+    const toast = document.getElementById('toast');
+    btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
     area.classList.add('changing');
-    setTimeout(() => { apply(getRand()); area.classList.remove('changing'); }, 350);
+    setTimeout(() => {
+      apply(getRand()); opened++; updateCount();
+      area.classList.remove('changing');
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 1400);
+    }, 350);
   }
-  apply(getRand());
+  apply(getRand()); opened = 1; updateCount();
 </script>
 </body>
 </html>
