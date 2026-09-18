@@ -276,12 +276,14 @@
       100%{ opacity: 0; transform: translate(calc(-50% + var(--bx)), calc(-50% + var(--by))) scale(1.2) rotate(var(--br)); }
     }
     /* 칠라씨가 새 편지에 폴짝 */
-    .chilla-img.hop { animation: chillaHop .65s cubic-bezier(.34,1.56,.64,1); }
+    .chilla-img.hop { animation: chillaHop .8s cubic-bezier(.3,.9,.4,1.1); }
     @keyframes chillaHop {
-      0%  { transform: translateX(-50%) translateY(0) rotate(0); }
-      35% { transform: translateX(-50%) translateY(-22px) rotate(-4deg) scaleY(1.05); }
-      55% { transform: translateX(-50%) translateY(-18px) rotate(3deg); }
-      100%{ transform: translateX(-50%) translateY(0) rotate(0); }
+      0%  { transform: translateX(-50%) translateY(0) scaleY(1); }
+      12% { transform: translateX(-50%) translateY(6px) scaleY(0.88) scaleX(1.08); }   /* 움츠렸다가 */
+      45% { transform: translateX(-50%) translateY(-64px) rotate(-5deg) scaleY(1.08) scaleX(0.96); } /* 쭉! */
+      62% { transform: translateX(-50%) translateY(-52px) rotate(4deg); }
+      85% { transform: translateX(-50%) translateY(4px) scaleY(0.92) scaleX(1.06); }   /* 착지 */
+      100%{ transform: translateX(-50%) translateY(0) scaleY(1); }
     }
     /* 3단계 out: 편지지가 봉투에서 위로 나오고 봉투는 아래로 사라짐 */
     .letter-card.out .quote-area { opacity: 1; transform: none; animation: paperIn .55s cubic-bezier(.34,1.4,.64,1) both; }
@@ -713,7 +715,7 @@
   function chillaHop() {
     const c = document.querySelector('.chilla-img');
     c.classList.remove('hop'); void c.offsetWidth; c.classList.add('hop');
-    setTimeout(() => c.classList.remove('hop'), 700);
+    setTimeout(() => c.classList.remove('hop'), 850);
   }
   let busy = false;
   function nextQuote(e) {
@@ -723,17 +725,15 @@
     const toast = document.getElementById('toast');
     btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
     // 봉투 등장(편지지 들어감) → 뚜껑 열림 → 새 편지지가 나옴 → 봉투 퇴장
+    // 새 편지 도착 알림이 먼저 뜨고, 그 다음 봉투가 열립니다
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1050);
     card.classList.remove('out');
     card.classList.add('sealed');
-    setTimeout(() => { apply(getRand()); card.classList.add('opening'); burstFromEnvelope(); }, 350);
-    setTimeout(() => { card.classList.add('out'); chillaHop(); }, 850);
-    setTimeout(() => {
-      card.classList.remove('sealed', 'opening');
-      toast.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove('show'), 1400);
-      busy = false;
-    }, 1350);
+    setTimeout(() => { apply(getRand()); card.classList.add('opening'); burstFromEnvelope(); }, 650);
+    setTimeout(() => { card.classList.add('out'); chillaHop(); }, 1150);
+    setTimeout(() => { card.classList.remove('sealed', 'opening'); busy = false; }, 1700);
   }
   apply(getRand());
 </script>
