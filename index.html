@@ -214,11 +214,47 @@
     /* 글귀 */
     .quote-area {
       text-align: center;
-      min-height: 110px;
+      min-height: 96px;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
     }
+    .quote-area { transition: opacity 0.25s, transform 0.45s cubic-bezier(.2,.8,.2,1); }
     .quote-area.changing { animation: pageTurn 0.35s ease both; }
+
+    /* ── 봉투 애니메이션 ── */
+    .letter-stage { position: relative; }
+    .letter-card { padding-bottom: 18px; }
+    .letter-card .btn-new { width: 100%; margin-top: 12px; }
+    .envelope {
+      position: absolute; left: 50%; top: 50%;
+      width: 220px; height: 140px;
+      transform: translate(-50%, -50%) scale(0.6);
+      opacity: 0; pointer-events: none;
+      perspective: 600px;
+      transition: opacity 0.2s, transform 0.25s cubic-bezier(.2,.8,.2,1);
+    }
+    .env-back, .env-front, .env-flap { position: absolute; left: 0; right: 0; }
+    .env-back  { top: 0; bottom: 0; background: #fde68a; border-radius: 4px; box-shadow: 2px 3px 0 rgba(0,0,0,0.12); }
+    .env-front { bottom: 0; height: 100%; background: #fcd34d;
+      clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%); border-radius: 0 0 4px 4px; }
+    .env-flap  { top: 0; height: 58%; background: #f5c211;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center; transform: rotateX(0deg);
+      transition: transform 0.45s cubic-bezier(.4,0,.2,1); z-index: 3; }
+    .env-seal  { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -30%);
+      font-size: 1.5rem; z-index: 4; filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.15));
+      transition: opacity 0.2s; }
+
+    /* 1단계 sealed: 봉투 등장, 편지지는 봉투 안으로 */
+    .letter-card.sealed .envelope { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    .letter-card.sealed .quote-area { opacity: 0; transform: translateY(24px) scale(0.92); }
+    /* 2단계 opening: 뚜껑 열림, 씰 사라짐 */
+    .letter-card.opening .env-flap { transform: rotateX(-175deg); z-index: 0; }
+    .letter-card.opening .env-seal { opacity: 0; }
+    /* 3단계 out: 편지지가 봉투에서 위로 나오고 봉투는 아래로 사라짐 */
+    .letter-card.out .quote-area { opacity: 1; transform: none; }
+    .letter-card.out .envelope { opacity: 0; transform: translate(-50%, -20%) scale(0.9); transition: opacity 0.35s 0.1s, transform 0.45s; }
+    @media (prefers-reduced-motion: reduce) { .envelope { display: none; } }
     @keyframes pageTurn {
       0%  { opacity:1; transform:rotateY(0deg) translateX(0); }
       40% { opacity:0; transform:rotateY(6deg) translateX(8px); }
@@ -307,7 +343,7 @@
       transform: translateX(-50%) translateY(-30px);
       background: var(--cream); color: var(--ink);
       font-family: 'Gowun Dodum', cursive; font-weight: 700; font-size: 0.95rem;
-      padding: 8px 16px; border-radius: 2px;
+      padding: 8px 16px; border-radius: 2px; white-space: nowrap;
       box-shadow: 2px 3px 0 rgba(0,0,0,0.15);
       opacity: 0; pointer-events: none; z-index: 1000;
       transition: opacity 0.25s, transform 0.25s;
@@ -448,7 +484,7 @@
   </div>
 
   <!-- 찢어진 종이 카드 -->
-  <div class="torn-card">
+  <div class="torn-card letter-card" id="letterCard">
     <!-- 테이프 -->
     <div class="tape" style="width:70px;top:-8px;left:30px;--tr:-4deg;"></div>
     <div class="tape" style="width:50px;top:-7px;right:40px;--tr:6deg;"></div>
@@ -457,16 +493,23 @@
       <span id="badge" class="badge luck">✦ 행운</span>
     </div>
 
-    <div class="quote-area" id="quoteArea">
-      <div class="quote-open">"</div>
-      <p class="quote-text" id="quoteText">오늘 당신에게 행운이 찾아오고 있습니다.</p>
-      <hr class="dot-line">
-      <p class="quote-sub" id="quoteSub">— 오늘의 메시지</p>
+    <!-- 편지지 + 봉투 -->
+    <div class="letter-stage">
+      <div class="quote-area" id="quoteArea">
+        <div class="quote-open">"</div>
+        <p class="quote-text" id="quoteText">오늘 당신에게 행운이 찾아오고 있습니다.</p>
+        <hr class="dot-line">
+        <p class="quote-sub" id="quoteSub">— 오늘의 메시지</p>
+      </div>
+      <!-- 봉투: 새 편지 뽑을 때만 나타나서 열린 뒤 사라짐 -->
+      <div class="envelope" id="envelope" aria-hidden="true">
+        <div class="env-back"></div>
+        <div class="env-flap"></div>
+        <div class="env-front"></div>
+        <div class="env-seal">🍀</div>
+      </div>
     </div>
-  </div>
 
-  <!-- 버튼 -->
-  <div class="btn-wrap">
     <button class="collage-btn btn-new" id="nextBtn" onclick="nextQuote(event)">
       <span class="btn-main">✉️ 다른 편지 뽑기</span>
       <span class="btn-sub">누를 때마다 새 메시지가 와요 · <b id="quoteCount"></b></span>
@@ -617,19 +660,25 @@
     document.getElementById('quoteCount').textContent = opened + '번째 / 총 ' + quotes.length + '통';
   }
   let toastTimer;
+  let busy = false;
   function nextQuote(e) {
-    const area = document.getElementById('quoteArea');
+    if (busy) return; busy = true;
+    const card = document.getElementById('letterCard');
     const btn  = document.getElementById('nextBtn');
     const toast = document.getElementById('toast');
     btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
-    area.classList.add('changing');
+    // 봉투 등장(편지지 들어감) → 뚜껑 열림 → 새 편지지가 나옴 → 봉투 퇴장
+    card.classList.remove('out');
+    card.classList.add('sealed');
+    setTimeout(() => { apply(getRand()); opened++; updateCount(); card.classList.add('opening'); }, 350);
+    setTimeout(() => { card.classList.add('out'); }, 850);
     setTimeout(() => {
-      apply(getRand()); opened++; updateCount();
-      area.classList.remove('changing');
+      card.classList.remove('sealed', 'opening');
       toast.classList.add('show');
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => toast.classList.remove('show'), 1400);
-    }, 350);
+      busy = false;
+    }, 1350);
   }
   apply(getRand()); opened = 1; updateCount();
 </script>
